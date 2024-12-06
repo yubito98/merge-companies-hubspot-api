@@ -20,7 +20,11 @@ async function readCompanies(){
                     'Authorization':`Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                params: after ? { after } : {},
+                params:{
+                  limit:10,
+                  after: after || undefined,
+                  properties: "name,account_id_sugar"
+                }
             });
 
             const data = response.data;
@@ -30,6 +34,9 @@ async function readCompanies(){
             dataResults.forEach(item => {
                 allCompanies.push({id:item.id, name:item.properties.name, accountIdSugar: item.properties.account_id_sugar, date: item.createdAt})
             });
+
+            console.log(dataResults)
+
 
             pageCount++;
             // Update the cursor and check if there are more pages
@@ -67,7 +74,7 @@ async function readCompanies(){
         console.log("Detail of companies with duplicates:", totalDuplicates);
         console.log("Total of duplicates that will be merged:", totalDuplicates.length)
 
-        // ORGANIZE DATA FOR MERGING DUPLICATES
+        // Organize the data for merging duplicates
 
         const organizeData = (array) => {
             const grouped = {};
@@ -117,6 +124,7 @@ async function readCompanies(){
           };
           organizeData(totalDuplicates)
 
+          
 
     } catch(error){
         console.log(error)
